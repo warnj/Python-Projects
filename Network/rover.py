@@ -16,7 +16,7 @@ sock.bind((UDP_IP, UDP_PORT))
 
 while True:
     data, addr = sock.recvfrom(1024)
-    print "received message:", data
+    print("received message:", data)
     # ser.write(data)
     # ser.write('\n')
 
