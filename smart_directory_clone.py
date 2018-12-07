@@ -1,12 +1,11 @@
 import os, shutil
 
-
+#copies file from src to dest, deleting the dest file if it exists
 def copyfile(src, dest):
     try:
         shutil.copy2(src, dest)
     except Exception as e:
         print('Exception while copying {} to {}, err: {}'.format(src, dest, e))
-
 
 def deletefile(file):
     try:
@@ -14,17 +13,25 @@ def deletefile(file):
     except Exception as e:
         print('Exception while deleting {}, err: {}'.format(file, e))
 
+def deletedir(dir):
+    try:
+        os.rmdir(dir)
+    except Exception as e:
+        print('Exception while deleting empty directory {}, err: {}'.format(dir, e))
 
-SOURCE = '/Users/j.warner/scripts'
-DESTINATION = '/Users/j.warner/scriptsbkup'
+
+# !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+SOURCE = 'D:\Pictures'
+DESTINATION = 'F:\Bkup 2018_11_20\Pictures'
 
 files = {}
 dirs = {}
 os.makedirs(DESTINATION, exist_ok=True)
 
 # create source to destination file and directory mappings
+print('Beginning directory walk to create source to dest mapping')
 for root, directories, filenames in os.walk(SOURCE):
-    relativeroot = root[len(SOURCE) + 1:]  # relative path to root directory from SOURCE
+    relativeroot = root[len(SOURCE)+1:]  # relative path to root directory from SOURCE
     destroot = os.path.join(DESTINATION, relativeroot)  # future absolute path to root directory from DESTINATION
 
     for directory in directories:
@@ -36,7 +43,9 @@ for root, directories, filenames in os.walk(SOURCE):
         d = os.path.join(destroot, filename)
         files[d] = s
 
+
 # remove files in destination that do not have respective source file
+print('Removing destination files that are not present in source')
 for root, directories, filenames in os.walk(DESTINATION):
     for filename in filenames:
         d = os.path.join(root, filename)
@@ -44,28 +53,32 @@ for root, directories, filenames in os.walk(DESTINATION):
             print('deleting file from dest that is no longer in src: {}'.format(d))
             deletefile(d)
 
+
 # remove empty directories in destination
+print('Removing empty dest directories')
 for root, directories, filenames in os.walk(DESTINATION):
     for directory in directories:
         d = os.path.join(root, directory)
         if len(os.listdir(d)) == 0:
             print('removing empty directory {}'.format(d))
-            try:
-                os.rmdir(d)
-            except Exception as e:
-                print('Exception while deleting empty directory {}, err: {}'.format(d, e))
+            deletedir(d)
+
 
 # make directories in destination as needed
+print('Making dest directories')
 for d in dirs:
     if not os.path.isdir(d):
         os.makedirs(d, exist_ok=True)
 
+
 # copy files to destination that are not already there
+print('Comparing files and copying if needed')
 for dest, src in files.items():
     try:
         stats = os.stat(dest)
     except OSError:
         # file doesn't exist
+        # print('file {} does not exist, copying'.format(dest))
         copyfile(src, dest)
     else:
         # file does exist, compare stats
@@ -73,10 +86,15 @@ for dest, src in files.items():
         if stats.st_size == srcstats.st_size:
             # print('files the same size, skipping {}'.format(dest))
             continue
-        elif stats.st_mtime == srcstats.st_mtime:
-            # print('files modifies at same time, skipping {}'.format(dest))
-            continue
-        else:
-            print('File exists, deleting dest, then copying to dest')
+        # elif stats.st_mtime == srcstats.st_mtime:  # this never happens
+        #     print('files modified at same time, skipping {}'.format(dest))
+        #     continue
+        else:  # this happens if previously backed up photo is rotated or otherwise changed
+            print('File exists {}, deleting dest, then copying to dest'.format(dest))
             # deletefile(dest)
             copyfile(src, dest)
+
+print('Done cloning')
+
+
+
