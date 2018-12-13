@@ -47,6 +47,7 @@
       "name": "Deception Pass",
       "data": "http://tides.mobilegeographics.com/locations/1528.html",
       "slack_before_ebb": 0,
+      "COMMENT": "Marker Buoy seems to have max_flood = 4.1 and max_ebb = 5.9, however NW Dive Club dives with either flood or ebb max about 5.9 and sum of the two less than 11 kts",
       "max_flood": 4.1,
       "max_ebb": 5.9,
       "max_total_speed": 9.8,
@@ -131,6 +132,52 @@
       "diveable_before_flood": true,
       "diveable_before_ebb": true,
       "diveable_off_slack": false
+    },
+    {
+      "name": "Three Tree North",
+      "data": "http://tides.mobilegeographics.com/locations/113.html",
+      "slack_before_flood": -36,
+      "slack_before_ebb": -13,
+      "max_flood": 1.1,
+      "max_ebb": 1.1,
+      "max_total_speed": 2.2,
+      "dive_duration": 110,
+      "surface_swim_time": 5,
+      "diveable_before_flood": true,
+      "diveable_before_ebb": true,
+      "diveable_off_slack": true,
+      "max_diveable_flood": 1.1,
+      "max_diveable_ebb": 1.1
+    },
+    {
+      "name": "Alki Pipeline or Junkyard",
+      "data": "http://tides.mobilegeographics.com/locations/113.html",
+      "slack_before_flood": 0,
+      "slack_before_ebb": 0,
+      "max_flood": 0.4,
+      "max_ebb": 0.4,
+      "max_total_speed": 0.8,
+      "dive_duration": 110,
+      "surface_swim_time": 5,
+      "diveable_before_flood": true,
+      "diveable_before_ebb": true,
+      "diveable_off_slack": false
+    },
+    {
+      "name": "Saltwater State Park",
+      "data": "http://tides.mobilegeographics.com/locations/6426.html",
+      "slack_before_flood": 0,
+      "slack_before_ebb": 0,
+      "max_flood": 4.2,
+      "max_ebb": 4.2,
+      "max_total_speed": 8,
+      "dive_duration": 100,
+      "surface_swim_time": 15,
+      "diveable_before_flood": true,
+      "diveable_before_ebb": true,
+      "diveable_off_slack": true,
+	  "max_diveable_flood": 3,
+      "max_diveable_ebb": 3
     }
   ]
 }

@@ -27,6 +27,14 @@ def printinfo(str):
         print(str)
 
 
+def createOrAppend(str):
+    global SITES
+    if SITES:
+        SITES.add(str)
+    else:
+        SITES = {str}
+
+
 # returns a list of datetime days that are weekends and holiday that occur between start (today by default) and
 # futureDays in the future
 def getNonWorkDays(futureDays, start=dt.now()):
@@ -70,9 +78,21 @@ def getDaySlacks(lines):
         if sunrise and "Slack" in line:
             slacks.append(i)
         elif "Sunrise" in line:
-            sunrise = i
+            sunrise = True
         elif "Sunset" in line:
-            break
+            return slacks
+    return slacks
+
+
+# returns list with indexes of the slack currents in the first 24hrs of the given list of data lines
+def getAllSlacks(lines):
+    weekday = lines[0].split()[1]
+    slacks = []
+    for i, line in enumerate(lines):
+        if line.split()[1] != weekday:
+            return slacks
+        elif "Slack" in line:
+            slacks.append(i)
     return slacks
 
 
@@ -119,8 +139,8 @@ def printDive(s, site):
     print('\t\tMinCurrentTime = {}, Duration = {}, SurfaceSwim = {}'
           .format(dt.strftime(minCurrentTime, TIMEFMT), site["dive_duration"], site["surface_swim_time"]))
     print('\t\tEntrytime: ' + dt.strftime(entryTime, TIMEFMT))
-    print('\t\tMarker Buoy Entrytime (60min dive, no surface swim): ' +
-          dt.strftime(minCurrentTime - td(minutes=30), TIMEFMT))
+    # print('\t\tMarker Buoy Entrytime (60min dive, no surface swim): ' +
+    #       dt.strftime(minCurrentTime - td(minutes=30), TIMEFMT))
 
 
 # Checks the givens list of Slacks if a dive is possible. If so, prints information about the dive.
@@ -144,29 +164,41 @@ def printDiveDay(slacks, site):
             printDive(s, site)
 
 # ---------------------------------- CONFIGURABLE PARAMETERS -----------------------------------------------------------
-# TODO: make Start and diveDay the same parameter
 # START = dt.now()
-START = dt(2018, 12, 20)  # date to begin considering diveable conditions
+START = dt(2018, 12, 15)  # date to begin considering diveable conditions
 DAYS_IN_FUTURE = 1  # number of days after START to consider
 
-# SITES = None
-# SITES = {"Keystone Jetty"}
-# SITES = {"Day Island Wall"}
-# SITES = {"Skyline Wall"}
-# SITES = {"Salt Creek"}
-# SITES = {"Deception Pass"}
-SITES = {"Fox Island East Wall"}
+SITES = None  # Consider all sites
+# createOrAppend("Keystone Jetty")
+# createOrAppend("Day Island Wall")
+# createOrAppend("Skyline Wall")
+# createOrAppend("Salt Creek")
+# createOrAppend("Three Tree North")
+# createOrAppend("Fox Island East Wall")
+# createOrAppend("Alki Pipeline or Junkyard")
+# createOrAppend("Sunrise Beach")
+# createOrAppend("Fox Island Bridge")
+# createOrAppend("Saltwater State Park")
 
 filterNonWorkDays = False  # only consider diving on weekends and holidays
-filterDaylight = True  # TODO: implement this filter
+filterDaylight = True  # TODO: fix unimportant bug with this filter if first slack of the day (well before sunrise) doesn't have a previous Max before it, loops around to future with negative index
 
 PRINTINFO = True  # print non-diveable days and reason why not diveable
+
+possibleDiveDays = None  # Specify dates
+# possibleDiveDays = [
+#     dt(2018, 9, 30),
+#     dt(2018, 4, 12),
+#     dt(2018, 4, 10),
+#     dt(2015, 2, 28)
+# ]
 # ----------------------------------------------------------------------------------------------------------------------
 
-if filterNonWorkDays:
-    possibleDiveDays = getNonWorkDays(DAYS_IN_FUTURE, START)
-else:
-    possibleDiveDays = getAllDays(DAYS_IN_FUTURE, START)
+if not possibleDiveDays:
+    if filterNonWorkDays:
+        possibleDiveDays = getNonWorkDays(DAYS_IN_FUTURE, START)
+    else:
+        possibleDiveDays = getAllDays(DAYS_IN_FUTURE, START)
 
 json_data = open('dive_sites.json').read()
 data = json.loads(json_data)
@@ -182,9 +214,12 @@ for i in range(len(data["sites"])):
             html = response.read()
             soup = BeautifulSoup(html, 'html.parser')
             predictions = soup.find("pre", {"class": "predictions-table"})
-            lines = predictions.text.splitlines()
+            lines = predictions.text.splitlines()[3:]
 
-            slackIndexes = getDaySlacks(lines)  # get slack currents during the day
+            if filterDaylight:
+                slackIndexes = getDaySlacks(lines)
+            else:
+                slackIndexes = getAllSlacks(lines)
             slacks = getSlackData(lines, slackIndexes)  # populate Slack objects
 
             printDiveDay(slacks, siteData)  # interpret Slack objects with json data to identify diveable times
