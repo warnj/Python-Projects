@@ -127,6 +127,22 @@ def getSlackData(lines, indexes):
     return slacks
 
 
+# Returns a list of slacks from given mobilegeographics url on the given day. Includes night slacks if daylight=False
+def getSlacks(day, baseUrl, daylight=True):
+    url = baseUrl + "?y={}&m={}&d={}".format(day.year, day.month, day.day)
+    with urllib.request.urlopen(url) as response:
+        html = response.read()
+        soup = BeautifulSoup(html, 'html.parser')
+        predictions = soup.find("pre", {"class": "predictions-table"})
+        lines = predictions.text.splitlines()[3:]
+
+        if daylight:
+            slackIndexes = getDaySlacks(lines)
+        else:
+            slackIndexes = getAllSlacks(lines)
+        return getSlackData(lines, slackIndexes)  # populate Slack objects
+
+
 # prints entry time for Slack s at the given site
 def printDive(s, site):
     if s.slackBeforeEbb:
@@ -163,6 +179,7 @@ def printDiveDay(slacks, site):
         else:
             printDive(s, site)
 
+
 # ---------------------------------- CONFIGURABLE PARAMETERS -----------------------------------------------------------
 # START = dt.now()
 START = dt(2018, 12, 15)  # date to begin considering diveable conditions
@@ -194,32 +211,27 @@ possibleDiveDays = None  # Specify dates
 # ]
 # ----------------------------------------------------------------------------------------------------------------------
 
-if not possibleDiveDays:
-    if filterNonWorkDays:
-        possibleDiveDays = getNonWorkDays(DAYS_IN_FUTURE, START)
-    else:
-        possibleDiveDays = getAllDays(DAYS_IN_FUTURE, START)
+def main():
+    global possibleDiveDays
 
-json_data = open('dive_sites.json').read()
-data = json.loads(json_data)
+    if not possibleDiveDays:
+        if filterNonWorkDays:
+            possibleDiveDays = getNonWorkDays(DAYS_IN_FUTURE, START)
+        else:
+            possibleDiveDays = getAllDays(DAYS_IN_FUTURE, START)
 
-for i in range(len(data["sites"])):
-    siteData = data["sites"][i]
-    if SITES and siteData["name"] not in SITES:
-        continue
-    print(siteData["name"])
-    for day in possibleDiveDays:
-        url = siteData["data"] + "?y={}&m={}&d={}".format(day.year, day.month, day.day)
-        with urllib.request.urlopen(url) as response:
-            html = response.read()
-            soup = BeautifulSoup(html, 'html.parser')
-            predictions = soup.find("pre", {"class": "predictions-table"})
-            lines = predictions.text.splitlines()[3:]
+    json_data = open('dive_sites.json').read()
+    data = json.loads(json_data)
 
-            if filterDaylight:
-                slackIndexes = getDaySlacks(lines)
-            else:
-                slackIndexes = getAllSlacks(lines)
-            slacks = getSlackData(lines, slackIndexes)  # populate Slack objects
-
+    for i in range(len(data["sites"])):
+        siteData = data["sites"][i]
+        if SITES and siteData["name"] not in SITES:
+            continue
+        print(siteData["name"])
+        for day in possibleDiveDays:
+            slacks = getSlacks(day, siteData["data"], daylight=filterDaylight)
             printDiveDay(slacks, siteData)  # interpret Slack objects with json data to identify diveable times
+
+
+if __name__ == "__main__":
+    main()

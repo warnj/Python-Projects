@@ -19,6 +19,7 @@
 *.tar
 *.zip
 *.pkl
+*pycache*
 
 # Logs and databases #
 ######################
@@ -36,6 +37,7 @@
 ehthumbs.db
 Thumbs.db
 *.bin
+*bak.*
 
 personal_data.json
 geckodriver.log
