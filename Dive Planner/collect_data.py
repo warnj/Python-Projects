@@ -1,5 +1,6 @@
 from dive_plan import Slack
 from dive_plan import getSlacks
+from dive_plan import getEntryTimes
 from selenium import webdriver
 from datetime import datetime as dt
 from datetime import timedelta as td
@@ -32,7 +33,7 @@ SKIP = ['friends of', 'club meet', 'sunset hill', 'lujac', 'boat', 'charter', 'l
 
 class Dive:
     # website data
-    date = ""
+    date = None  # dt object
     title = ""
     descr = ""
     location = ""
@@ -41,10 +42,10 @@ class Dive:
     # interpreted data
     splash = ""  # if able to get splash time, put it here
     site = ""
-    slack = Slack()
+    slack = None  # Slack object
 
     def __str__(self):
-        return '{}  {}  {}'.format(self.date, self.title, self.location)
+        return '{}  {}  {}'.format(dt.strftime(self.date, MEETUP_TIME_FORMAT), self.title, self.location)
 
     def __repr__(self):
         return self.__str__()
@@ -179,29 +180,31 @@ def main():
         print('Data saved to file:', filename)
     else:
         # filename = getDataFileName()
-        filename = 'dive_meetup_data_medium.csv'
+        filename = 'dive_meetup_data.csv'
 
-    print('Extracting sites from data file', filename)
+
+    print('Extracting dives from data file', filename)
     dives = []
     with open(filename, 'r', encoding='utf-8', newline='\n') as f:
         reader = csv.reader(f, delimiter=',')
         for line in reader:
             dive = Dive()
-            # TODO: remove .lower() when data is updated
-            dive.date, dive.title, dive.location, dive.address, dive.descr = line[0], line[1].lower(), line[2].lower(), line[3].lower(), line[4].lower()
+            dive.date, dive.title, dive.location, dive.address, dive.descr = \
+                dt.strptime(line[0], MEETUP_TIME_FORMAT), line[1], line[2], line[3], line[4]
             dives.append(dive)
 
-    print('Refining dives')
+    print('Classifying dive sites')
     results = refineDives(dives)
 
-    for site, vals in results.items():
-        print(site)
-        for dive in vals:
-            print('\t', dive)
+    # for site, vals in results.items():
+    #     print(site)
+    #     for dive in vals:
+    #         print('\t', dive)
 
+    print('Identifying the nearest period of slack current for each dive')
     json_data = open('dive_sites.json').read()
     data = json.loads(json_data)
-    for site, dives in results.items():
+    for site, sitedives in results.items():
         locationJson = None
         # find corresponding site in dive_sites.json
         for location in data["sites"]:
@@ -213,10 +216,45 @@ def main():
             continue
         # for each dive at this location, find the slack that was dove
         print(site)
-        for dive in dives:
-            slacks = getSlacks(dt.strptime(dive.date, MEETUP_TIME_FORMAT), locationJson['data'])
+        for dive in sitedives:
+            # if site != "Sunrise Beach":
+            if site != "Fox Island East Wall" and site != "Sunrise Beach":
+                continue
+
+            slacks = getSlacks(dive.date, locationJson['data'], daylight=True)  # TODO: ideally, this would not be limited to daylight
+            estMeetupTimes = {}  # estimated meetup time for the slack -> slack
+            for slack in slacks:
+                times = getEntryTimes(slack, locationJson)
+                if not times:
+                    continue
+                estMeetupTimes[times[1] - td(minutes=45)] = slack  # takes ~45min to meet and gear up
+            # find the estMeetupTime closest to the actual meetup time. This gives the slack the dive was planned for.
+            minDelta, slackDove = td(hours=99999).total_seconds(), None
+            for estTime, slack in estMeetupTimes.items():
+                diff = abs((dive.date - estTime).total_seconds())
+                if diff < minDelta:
+                    minDelta, slackDove = diff, slack
+
+            dive.slack = slackDove
             print('\t', dive)
-            print('\t\t', slacks)
+            # print('\t\t', slacks)
+            print('\t\t', slackDove)
+            minCurrentTime, markerBuoyEntryTime, entryTime = getEntryTimes(dive.slack, locationJson)
+            minCurrentTime = dt.strftime(minCurrentTime, MEETUP_TIME_FORMAT)
+            markerBuoyEntryTime = dt.strftime(markerBuoyEntryTime, MEETUP_TIME_FORMAT)
+            entryTime = dt.strftime(entryTime, MEETUP_TIME_FORMAT)
+            print('\t\tMarkerBuoyEntryTime = {} MyEntryTime = {} MinCurrentTime = {}'.format(markerBuoyEntryTime, entryTime, minCurrentTime))
+
+    # filename = getDataFileName()
+    # print('Writing slacks to file', filename)
+    # with open(filename, 'w', encoding='utf-8', newline='\n') as f:
+    #     w = csv.writer(f, delimiter=',')
+    #     for dive in dives:
+    #         w.writerow([dt.strftime(dive.date, MEETUP_TIME_FORMAT), dive.title, dive.location, dive.address, dive.descr, dive.slack])
+    # print('Done writing to file', filename)
+
+
+
 
 
 if __name__ == "__main__":

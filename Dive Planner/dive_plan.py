@@ -143,20 +143,36 @@ def getSlacks(day, baseUrl, daylight=True):
         return getSlackData(lines, slackIndexes)  # populate Slack objects
 
 
-# prints entry time for Slack s at the given site
+# Returns [mincurrenttime, markerbuoyentrytime, myentrytime] for the given slack at the given site
+# mincurrenttime = time of slack current, markerbuoyentrytime = 30min before mincurrenttime,
+# myentrytime = mincurrenttime - surfaceswimtime - expecteddivetime/2
+# Returns None if an expected json data point is not found
+def getEntryTimes(s, site):
+    try:
+        if s.slackBeforeEbb:
+            delta = td(minutes=site["slack_before_ebb"])
+        else:
+            delta = td(minutes=site["slack_before_flood"])
+        minCurrentTime = s.time + delta
+        entryTime = minCurrentTime - td(minutes=site["dive_duration"] / 2) - td(minutes=site["surface_swim_time"])
+        markerBuoyEntryTime = minCurrentTime - td(minutes=30)
+        return minCurrentTime, markerBuoyEntryTime, entryTime
+    except KeyError:
+        return None
+
+
+# Prints entry time for Slack s at the given site
 def printDive(s, site):
-    if s.slackBeforeEbb:
-        delta = td(minutes=site["slack_before_ebb"])
+    times = getEntryTimes(s, site)
+    if not times:
+        print('ERROR: a json key was expected that was not found')
     else:
-        delta = td(minutes=site["slack_before_flood"])
-    minCurrentTime = s.time + delta
-    entryTime = minCurrentTime - td(minutes=site["dive_duration"] / 2) - td(minutes=site["surface_swim_time"])
-    print('\tDiveable: ' + str(s))
-    print('\t\tMinCurrentTime = {}, Duration = {}, SurfaceSwim = {}'
-          .format(dt.strftime(minCurrentTime, TIMEFMT), site["dive_duration"], site["surface_swim_time"]))
-    print('\t\tEntrytime: ' + dt.strftime(entryTime, TIMEFMT))
-    # print('\t\tMarker Buoy Entrytime (60min dive, no surface swim): ' +
-    #       dt.strftime(minCurrentTime - td(minutes=30), TIMEFMT))
+        minCurrentTime, markerBuoyEntryTime, entryTime = times
+        print('\tDiveable: ' + str(s))
+        print('\t\tMinCurrentTime = {}, Duration = {}, SurfaceSwim = {}'
+              .format(dt.strftime(minCurrentTime, TIMEFMT), site["dive_duration"], site["surface_swim_time"]))
+        print('\t\tEntrytime: ' + dt.strftime(entryTime, TIMEFMT))
+        print('\t\tMarker Buoy Entrytime (60min dive, no surface swim):', dt.strftime(markerBuoyEntryTime, TIMEFMT))
 
 
 # Checks the givens list of Slacks if a dive is possible. If so, prints information about the dive.
@@ -182,7 +198,7 @@ def printDiveDay(slacks, site):
 
 # ---------------------------------- CONFIGURABLE PARAMETERS -----------------------------------------------------------
 # START = dt.now()
-START = dt(2018, 12, 15)  # date to begin considering diveable conditions
+START = dt(2018, 12, 20)  # date to begin considering diveable conditions
 DAYS_IN_FUTURE = 1  # number of days after START to consider
 
 SITES = None  # Consider all sites
