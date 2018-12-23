@@ -85,24 +85,33 @@ def scroll(d, pausetime, scrolltime):
 # Iterates through main list element in given driver, writes dive data to file with given csv writer
 def parseDives(d, w):
     # To find exact xpath, go to the ul element containing the dives in Chrome with 'inspect element' right click
-    # option. Then right-click on elelment -> copy -> copy XPath.
+    # option. Then right-click on element -> copy -> copy XPath.
     list = d.find_element_by_xpath('//*[@id="mupMain"]/div[4]/div[2]/div/div/div/div[2]/div/div/ul')
-    for diveElem in list.find_elements_by_tag_name('li'):
+    for i, diveElem in enumerate(list.find_elements_by_tag_name('li')):
         text = diveElem.text.splitlines()
-        if len(text) > 1:
+        if len(text) > 1:  # some list elements are not dives
             try:
                 i = text.index('Organizer tools')
             except ValueError:
                 print('ERROR getting location:', diveElem.text)
                 continue
             if i + 2 >= len(text):
+                print('ERROR getting location, index too large:', diveElem.text)
                 continue
+
+            linkText = ''
+            try:
+                link = diveElem.find_element_by_tag_name(
+                    'a')  # Also works: diveElem.find_element_by_class_name('eventCard--link')
+                linkText = link.get_attribute('href')
+            except Exception as e:
+                print('exception getting link by tag name', e)
             date = text[3]
             title = text[4].lower()
             descr = text[7].lower()
             location = text[i + 1].lower()
             address = text[i + 2].lower()
-            w.writerow([date, title, location, address, descr])
+            w.writerow([date, title, location, address, descr, linkText])
 
 def appendMap(map, key, value):
     if key in map:
@@ -147,7 +156,7 @@ def refineDives(dives):
 
 
 def main():
-    getData = False
+    getData = True
     if getData:
         d = webdriver.Firefox()
         d.get('https://secure.meetup.com/login')
@@ -167,7 +176,9 @@ def main():
 
         d.get('https://www.meetup.com/Marker-Buoy-Dive-Club/events/past')
 
-        scrollSeconds = 1200
+        # scrollSeconds = 1200
+        # pauseSeconds = 7
+        scrollSeconds = 10
         pauseSeconds = 7
         print('Scrolling for {}s. Content load pause = {}s'.format(scrollSeconds, pauseSeconds))
         scroll(d, pauseSeconds, scrollSeconds)
@@ -182,7 +193,7 @@ def main():
         # filename = getDataFileName()
         filename = 'dive_meetup_data.csv'
 
-
+'''
     print('Extracting dives from data file', filename)
     dives = []
     with open(filename, 'r', encoding='utf-8', newline='\n') as f:
@@ -217,8 +228,7 @@ def main():
         # for each dive at this location, find the slack that was dove
         print(site)
         for dive in sitedives:
-            # if site != "Sunrise Beach":
-            if site != "Fox Island East Wall" and site != "Sunrise Beach":
+            if site != "Fox Island Bridge":
                 continue
 
             slacks = getSlacks(dive.date, locationJson['data'], daylight=True)  # TODO: ideally, this would not be limited to daylight
@@ -252,7 +262,7 @@ def main():
     #     for dive in dives:
     #         w.writerow([dt.strftime(dive.date, MEETUP_TIME_FORMAT), dive.title, dive.location, dive.address, dive.descr, dive.slack])
     # print('Done writing to file', filename)
-
+'''
 
 
 

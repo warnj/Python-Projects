@@ -198,8 +198,8 @@ def printDiveDay(slacks, site):
 
 # ---------------------------------- CONFIGURABLE PARAMETERS -----------------------------------------------------------
 # START = dt.now()
-START = dt(2018, 12, 20)  # date to begin considering diveable conditions
-DAYS_IN_FUTURE = 1  # number of days after START to consider
+START = dt(2008, 11, 16)  # date to begin considering diveable conditions
+DAYS_IN_FUTURE = 0  # number of days after START to consider
 
 SITES = None  # Consider all sites
 # createOrAppend("Keystone Jetty")
