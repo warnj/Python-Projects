@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime as dt
 from datetime import timedelta as td
 
-TIMEFMT = '%Y-%m-%d %I:%M%p'
+TIMEPARSEFMT = '%Y-%m-%d %I:%M%p'  # example: 2019-01-18 09:36AM
+TIMEPRINTFMT = '%a %Y-%m-%d %I:%M%p'  # example: Fri 2019-01-18 09:36AM
 
 class Slack:
     time = None
@@ -14,9 +15,9 @@ class Slack:
 
     def __str__(self):
         if self.slackBeforeEbb:
-            return '{} -> {} -> {}'.format(self.floodSpeed, dt.strftime(self.time, TIMEFMT), self.ebbSpeed)
+            return '{} -> {} -> {}'.format(self.floodSpeed, dt.strftime(self.time, TIMEPRINTFMT), self.ebbSpeed)
         else:
-            return '{} -> {} -> {}'.format(self.ebbSpeed, dt.strftime(self.time, TIMEFMT), self.floodSpeed)
+            return '{} -> {} -> {}'.format(self.ebbSpeed, dt.strftime(self.time, TIMEPRINTFMT), self.floodSpeed)
 
     def __repr__(self):
         return self.__str__()
@@ -114,15 +115,15 @@ def getSlackData(lines, indexes):
         tokens2 = lines[post].split()
 
         if s.slackBeforeEbb:
-            s.floodSpeed = float(tokens1[5])
-            s.ebbSpeed = float(tokens2[5])
+            s.floodSpeed = float(tokens1[4])
+            s.ebbSpeed = float(tokens2[4])
         else:
-            s.ebbSpeed = float(tokens1[5])
-            s.floodSpeed = float(tokens2[5])
+            s.ebbSpeed = float(tokens1[4])
+            s.floodSpeed = float(tokens2[4])
 
         tokens = lines[i].split()
-        dayTimeStr = tokens[0] + " " + tokens[2] + tokens[3]  # ex: 2018-11-17 1:15PM
-        s.time = dt.strptime(dayTimeStr, TIMEFMT)
+        dayTimeStr = tokens[0] + " " + tokens[1] + tokens[2]  # ex: 2018-11-17 1:15PM
+        s.time = dt.strptime(dayTimeStr, TIMEPARSEFMT)
         slacks.append(s)
     return slacks
 
@@ -170,9 +171,9 @@ def printDive(s, site):
         minCurrentTime, markerBuoyEntryTime, entryTime = times
         print('\tDiveable: ' + str(s))
         print('\t\tMinCurrentTime = {}, Duration = {}, SurfaceSwim = {}'
-              .format(dt.strftime(minCurrentTime, TIMEFMT), site["dive_duration"], site["surface_swim_time"]))
-        print('\t\tEntrytime: ' + dt.strftime(entryTime, TIMEFMT))
-        print('\t\tMarker Buoy Entrytime (60min dive, no surface swim):', dt.strftime(markerBuoyEntryTime, TIMEFMT))
+              .format(dt.strftime(minCurrentTime, TIMEPRINTFMT), site["dive_duration"], site["surface_swim_time"]))
+        print('\t\tEntrytime: ' + dt.strftime(entryTime, TIMEPRINTFMT))
+        print('\t\tMarker Buoy Entrytime (60min dive, no surface swim):', dt.strftime(markerBuoyEntryTime, TIMEPRINTFMT))
 
 
 # Checks the givens list of Slacks if a dive is possible. If so, prints information about the dive.
@@ -198,33 +199,41 @@ def printDiveDay(slacks, site):
 
 # ---------------------------------- CONFIGURABLE PARAMETERS -----------------------------------------------------------
 # START = dt.now()
-START = dt(2008, 11, 16)  # date to begin considering diveable conditions
-DAYS_IN_FUTURE = 0  # number of days after START to consider
+START = dt(2019, 1, 18)  # date to begin considering diveable conditions
+DAYS_IN_FUTURE = 2  # number of days after START to consider
 
 SITES = None  # Consider all sites
-# createOrAppend("Keystone Jetty")
-# createOrAppend("Day Island Wall")
-# createOrAppend("Skyline Wall")
 # createOrAppend("Salt Creek")
+# createOrAppend("Deception Pass")
+# createOrAppend("Skyline Wall")
+# createOrAppend("Keystone Jetty")
+# createOrAppend("Possession Point")
+# createOrAppend("Mukilteo")
+# createOrAppend("Edmonds Underwater Park")
 # createOrAppend("Three Tree North")
-# createOrAppend("Fox Island East Wall")
 # createOrAppend("Alki Pipeline or Junkyard")
+# createOrAppend("Saltwater State Park")
+# createOrAppend("Day Island Wall")
 # createOrAppend("Sunrise Beach")
 # createOrAppend("Fox Island Bridge")
-# createOrAppend("Saltwater State Park")
+# createOrAppend("Fox Island East Wall")
+# createOrAppend("Titlow")
+
 
 filterNonWorkDays = False  # only consider diving on weekends and holidays
+# TODO: warn when entrytime is within 20 min of sunrise / set
 filterDaylight = True  # TODO: fix unimportant bug with this filter if first slack of the day (well before sunrise) doesn't have a previous Max before it, loops around to future with negative index
 
 PRINTINFO = True  # print non-diveable days and reason why not diveable
 
 possibleDiveDays = None  # Specify dates
-# possibleDiveDays = [
-#     dt(2018, 9, 30),
-#     dt(2018, 4, 12),
-#     dt(2018, 4, 10),
-#     dt(2015, 2, 28)
-# ]
+possibleDiveDays = [
+    # dt(2016, 11, 5),
+    # dt(2016, 3, 5),
+    # dt(2014, 6, 7)
+    # dt(2019, 1, 19),
+    # dt(2018, 12, 27)
+]
 # ----------------------------------------------------------------------------------------------------------------------
 
 def main():
