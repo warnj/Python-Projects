@@ -9,6 +9,8 @@ TIMEPRINTFMT = '%a %Y-%m-%d %I:%M%p'  # example: Fri 2019-01-18 09:36AM
 
 class Slack:
     time = None
+    sunriseTime = None
+    sunsetTime = None  # this is never used, but might be interesting to print it sometimes
     slackBeforeEbb = False
     ebbSpeed = 0.0
     floodSpeed = 0.0
@@ -71,18 +73,24 @@ def getAllDays(futureDays, start=dt.now()):
     return days
 
 
-# returns list with indexes of the daytime slack currents in the given list of data lines
+# Returns list with indexes of the daytime slack currents in the given list of data lines. Also returns sunrise time
+# and sunset time.
 def getDaySlacks(lines):
-    sunrise = False
+    sunrise = None
     slacks = []
     for i, line in enumerate(lines):
         if sunrise and "Slack" in line:
             slacks.append(i)
         elif "Sunrise" in line:
-            sunrise = True
+            tokens = line.split()
+            dayTimeStr = tokens[0] + " " + tokens[1] + tokens[2]  # ex: 2018-11-17 1:15PM
+            sunrise = dt.strptime(dayTimeStr, TIMEPARSEFMT)
         elif "Sunset" in line:
-            return slacks
-    return slacks
+            tokens = line.split()
+            dayTimeStr = tokens[0] + " " + tokens[1] + tokens[2]  # ex: 2018-11-17 1:15PM
+            sunset = dt.strptime(dayTimeStr, TIMEPARSEFMT)
+            return slacks, sunrise, sunset
+    return slacks, sunrise, None
 
 
 # returns list with indexes of the slack currents in the first 24hrs of the given list of data lines
@@ -98,10 +106,12 @@ def getAllSlacks(lines):
 
 
 # returns a list of Slack objects corresponding to the slack indexes within the list of data lines
-def getSlackData(lines, indexes):
+def getSlackData(lines, indexes, sunrise, sunset):
     slacks = []
     for i in indexes:
         s = Slack()
+        s.sunriseTime = sunrise
+        s.sunsetTime = sunset
 
         pre = i - 1
         while "Ebb" not in lines[pre] and "Flood" not in lines[pre]:
@@ -137,11 +147,13 @@ def getSlacks(day, baseUrl, daylight=True):
         predictions = soup.find("pre", {"class": "predictions-table"})
         lines = predictions.text.splitlines()[3:]
 
+        sunrise = None
+        sunset = None
         if daylight:
-            slackIndexes = getDaySlacks(lines)
+            slackIndexes, sunrise, sunset = getDaySlacks(lines)
         else:
             slackIndexes = getAllSlacks(lines)
-        return getSlackData(lines, slackIndexes)  # populate Slack objects
+        return getSlackData(lines, slackIndexes, sunrise, sunset)  # populate Slack objects
 
 
 # Returns [mincurrenttime, markerbuoyentrytime, myentrytime] for the given slack at the given site
@@ -169,9 +181,19 @@ def printDive(s, site):
         print('ERROR: a json key was expected that was not found')
     else:
         minCurrentTime, markerBuoyEntryTime, entryTime = times
+        if s.sunriseTime:
+            warning = ""
+            if entryTime < s.sunriseTime:
+                warning = 'BEFORE'
+            elif entryTime - td(minutes=30) < s.sunriseTime:
+                warning = 'near'
+            if warning:
+                print('\tWARNING: entry time of {} is {} sunrise at {}'.format(dt.strftime(entryTime, TIMEPRINTFMT),
+                    warning, dt.strftime(s.sunriseTime, TIMEPRINTFMT)))
+
         print('\tDiveable: ' + str(s))
         print('\t\tMinCurrentTime = {}, Duration = {}, SurfaceSwim = {}'
-              .format(dt.strftime(minCurrentTime, TIMEPRINTFMT), site["dive_duration"], site["surface_swim_time"]))
+                .format(dt.strftime(minCurrentTime, TIMEPRINTFMT), site["dive_duration"], site["surface_swim_time"]))
         print('\t\tEntrytime: ' + dt.strftime(entryTime, TIMEPRINTFMT))
         print('\t\tMarker Buoy Entrytime (60min dive, no surface swim):', dt.strftime(markerBuoyEntryTime, TIMEPRINTFMT))
 
@@ -199,7 +221,7 @@ def printDiveDay(slacks, site):
 
 # ---------------------------------- CONFIGURABLE PARAMETERS -----------------------------------------------------------
 # START = dt.now()
-START = dt(2019, 1, 18)  # date to begin considering diveable conditions
+START = dt(2019, 1, 16)  # date to begin considering diveable conditions
 DAYS_IN_FUTURE = 2  # number of days after START to consider
 
 SITES = None  # Consider all sites
@@ -213,7 +235,7 @@ SITES = None  # Consider all sites
 # createOrAppend("Three Tree North")
 # createOrAppend("Alki Pipeline or Junkyard")
 # createOrAppend("Saltwater State Park")
-# createOrAppend("Day Island Wall")
+createOrAppend("Day Island Wall")
 # createOrAppend("Sunrise Beach")
 # createOrAppend("Fox Island Bridge")
 # createOrAppend("Fox Island East Wall")
@@ -221,7 +243,6 @@ SITES = None  # Consider all sites
 
 
 filterNonWorkDays = False  # only consider diving on weekends and holidays
-# TODO: warn when entrytime is within 20 min of sunrise / set
 filterDaylight = True  # TODO: fix unimportant bug with this filter if first slack of the day (well before sunrise) doesn't have a previous Max before it, loops around to future with negative index
 
 PRINTINFO = True  # print non-diveable days and reason why not diveable
