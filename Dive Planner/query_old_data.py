@@ -116,7 +116,7 @@ SITES = None  # show data for all sites
 # createOrAppend("Sunrise Beach")
 # createOrAppend("Fox Island Bridge")
 # createOrAppend("Fox Island East Wall")
-# createOrAppend("Titlow")
+createOrAppend("Titlow")
 
 
 def main():
@@ -143,6 +143,8 @@ def main():
     json_data = open('dive_sites.json').read()
     data = json.loads(json_data)
     for site, sitedives in results.items():
+        if SITES and site not in SITES:
+            continue
         locationJson = None
         # find corresponding site in dive_sites.json
         for location in data["sites"]:
@@ -155,9 +157,6 @@ def main():
         # for each dive at this location, find the slack that was dove
         print(site)
         for dive in sitedives:
-            if SITES and site not in SITES:
-                continue
-
             slacks = getSlacks(dive.date, locationJson['data'], daylight=True)  # TODO: ideally, this would not be limited to daylight
             estMeetupTimes = {}  # estimated meetup time for the slack -> slack
             for slack in slacks:
