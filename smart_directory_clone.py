@@ -23,10 +23,16 @@ def deletedir(dir):
 # !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SOURCE = 'D:\Pictures'
 DESTINATION = 'F:\Bkup 2018_11_20\Pictures'
+TEST = False
+PRINT = True
 
 files = {}
 dirs = {}
 os.makedirs(DESTINATION, exist_ok=True)
+if TEST:
+    tag = 'Test: '
+else:
+    tag = ''
 
 # create source to destination file and directory mappings
 print('Beginning directory walk to create source to dest mapping')
@@ -50,8 +56,10 @@ for root, directories, filenames in os.walk(DESTINATION):
     for filename in filenames:
         d = os.path.join(root, filename)
         if d not in files:
-            print('deleting file from dest that is no longer in src: {}'.format(d))
-            deletefile(d)
+            if PRINT:
+                print('{}deleting file from dest that is no longer in src: {}'.format(tag, d))
+            if not TEST:
+                deletefile(d)
 
 
 # remove empty directories in destination
@@ -60,15 +68,20 @@ for root, directories, filenames in os.walk(DESTINATION):
     for directory in directories:
         d = os.path.join(root, directory)
         if len(os.listdir(d)) == 0:
-            print('removing empty directory {}'.format(d))
-            deletedir(d)
+            if PRINT:
+                print('{}removing empty directory {}'.format(tag, d))
+            if not TEST:
+                deletedir(d)
 
 
 # make directories in destination as needed
 print('Making dest directories')
 for d in dirs:
     if not os.path.isdir(d):
-        os.makedirs(d, exist_ok=True)
+        if PRINT:
+            print('{}creating directory {}'.format(tag, d))
+        if not TEST:
+            os.makedirs(d, exist_ok=True)
 
 
 # copy files to destination that are not already there
@@ -78,21 +91,21 @@ for dest, src in files.items():
         stats = os.stat(dest)
     except OSError:
         # file doesn't exist
-        # print('file {} does not exist, copying'.format(dest))
-        copyfile(src, dest)
+        if PRINT:
+            print('{}file {} does not exist, copying'.format(tag, dest))
+        if not TEST:
+            copyfile(src, dest)
     else:
         # file does exist, compare stats
         srcstats = os.stat(src)
         if stats.st_size == srcstats.st_size:
             # print('files the same size, skipping {}'.format(dest))
             continue
-        # elif stats.st_mtime == srcstats.st_mtime:  # this never happens
-        #     print('files modified at same time, skipping {}'.format(dest))
-        #     continue
         else:  # this happens if previously backed up photo is rotated or otherwise changed
-            print('File exists {}, deleting dest, then copying to dest'.format(dest))
-            # deletefile(dest)
-            copyfile(src, dest)
+            if PRINT:
+                print('{}File exists {}, overwriting dest'.format(tag, dest))
+            if not TEST:
+                copyfile(src, dest)
 
 print('Done cloning')
 
