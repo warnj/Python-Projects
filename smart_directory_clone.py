@@ -22,7 +22,7 @@ def deletedir(dir):
 
 # !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SOURCE = 'D:\Pictures'
-DESTINATION = 'F:\Bkup 2018_11_20\Pictures'
+DESTINATION = 'F:\Bkup 2019_6_23\Pictures'
 TEST = False
 PRINT = True
 

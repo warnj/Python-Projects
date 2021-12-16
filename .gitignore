@@ -38,6 +38,7 @@ ehthumbs.db
 Thumbs.db
 *.bin
 *bak.*
+.idea
 
 personal_data.json
 geckodriver.log
