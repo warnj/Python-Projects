@@ -2,7 +2,10 @@ from os import walk
 import eyed3
 
 # SOURCE_PATH = 'D:/Music/Int/Country/'
-SOURCE_PATH = 'D:/Music/Int/'
+# SOURCE_PATH = 'D:/Music/Int/'
+SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
+
+ALBUM = ''
 
 def getArtistName(filename):
     try:
@@ -44,6 +47,11 @@ for filename in filenames:
         if fTitle != audiofile.tag.title:
             print('title from ({}) file ({}) does not match metadata ({})'.format(filename, fTitle, audiofile.tag.title))
             audiofile.tag.title = fTitle
+            updated = True
+
+        if ALBUM and ALBUM != audiofile.tag.album:
+            print('album ({}) does not match metadata ({})'.format(ALBUM, audiofile.tag.album))
+            audiofile.tag.album = ALBUM
             updated = True
 
         if updated: # actually do the update
