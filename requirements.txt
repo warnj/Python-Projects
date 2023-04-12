@@ -5,3 +5,9 @@ pandas
 numpy
 selenium
 eyeD3
+
+#beautifulsoup4==4.11.1
+fake-useragent==1.1.1
+html5lib==1.1
+PyYAML==6.0
+#selenium==4.7.2
