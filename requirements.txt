@@ -11,3 +11,4 @@ fake-useragent==1.1.1
 html5lib==1.1
 PyYAML==6.0
 #selenium==4.7.2
+pillow
