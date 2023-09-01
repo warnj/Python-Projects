@@ -1,6 +1,8 @@
 import os
 from os import walk
 
+# helps bulk rename song files
+
 SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
 prefix_to_add = 'name - '
 
@@ -23,4 +25,9 @@ def renameParen(filename):
 
 _, _, filenames = next(walk(SOURCE_PATH))
 for filename in filenames:
-    renameParen(filename)
+    # remove the track number prefix and add artist name
+    if filename.endswith('.mp3') and not filename.startswith(prefix_to_add):
+        title = filename[3:]
+        newName = prefix_to_add + title
+        # print(newName)
+        os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
