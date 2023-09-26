@@ -12,7 +12,7 @@ def printContents(directory):
     for root, dirs, files in sorted(os.walk(directory)):
         level = root.replace(directory, '').count(os.sep)
         indent = "    " * level
-        print(f"{indent}{pathlib.PureWindowsPath(root)}")
+        print(f"{indent}{pathlib.PureWindowsPath(root).as_posix()}")
         dirCount += 1
         fileCount += len(files)
         for file in sorted(files):
