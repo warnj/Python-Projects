@@ -9,12 +9,14 @@ Files follow naming conventions:
 '''
 
 # SOURCE_PATH = 'D:/Music/Int/Country/'
-SOURCE_PATH = 'D:/Music/Int/Movie/'
-# SOURCE_PATH = 'D:/Music/Int/'
+# SOURCE_PATH = 'D:/Music/Int/Movie/'
+SOURCE_PATH = 'D:/Music/Int/'
 # SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
 
+# optional
 ALBUM = ''
-GENRE = 'Soundtrack'  # examples: Country / Soundtrack - https://eyed3.readthedocs.io/en/latest/plugins/genres_plugin.html
+# GENRE = 'Indie / Alternative'  # examples: Country / Soundtrack / Pop - https://eyed3.readthedocs.io/en/latest/plugins/genres_plugin.html
+GENRE = ''
 
 
 # artist is always the first token before delimiter string " - "
