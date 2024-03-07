@@ -26,8 +26,8 @@ DESTINATION = 'F:\Bkup 2019_6_23\Pictures'
 TEST = False
 PRINT = True
 
-files = {}
-dirs = {}
+files = {}  # dest abs path -> source path
+dirs = {}  # dest abs path -> source path
 os.makedirs(DESTINATION, exist_ok=True)
 if TEST:
     tag = 'Test: '
@@ -108,6 +108,3 @@ for dest, src in files.items():
                 copyfile(src, dest)
 
 print('Done cloning')
-
-
-
