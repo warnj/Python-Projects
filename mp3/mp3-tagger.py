@@ -1,6 +1,7 @@
 from os import walk
 import eyed3
 
+# https://eyed3.readthedocs.io/en/latest/
 '''
 Files follow naming conventions:
     Artist - Title.mp3
@@ -8,7 +9,6 @@ Files follow naming conventions:
     Artist - Album - Title.mp3
 '''
 
-# SOURCE_PATH = 'D:/Music/Int/Country/'
 # SOURCE_PATH = 'D:/Music/Int/Movie/'
 SOURCE_PATH = 'D:/Music/Int/'
 # SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
@@ -17,7 +17,9 @@ SOURCE_PATH = 'D:/Music/Int/'
 ALBUM = ''
 # GENRE = 'Indie / Alternative'  # examples: Country / Soundtrack / Pop - https://eyed3.readthedocs.io/en/latest/plugins/genres_plugin.html
 GENRE = ''
-
+ORDER = {
+    "": 1,
+}
 
 # artist is always the first token before delimiter string " - "
 def getArtistName(filename):
@@ -71,10 +73,24 @@ def getAlbumName(filename):
 # assert getTitleName(filename) == 'A Title'
 # exit(1)
 
+# def searchTitle(fileTitle):
+#     for key in ORDER:
+#         if fileTitle == key:
+#             print('found match for song title: ' + fileTitle)
+#             return True
+#     print('NO found match for song title: ' + fileTitle)
+#     return False
+# _, _, filenames = next(walk(SOURCE_PATH))
+# for filename in filenames:
+#     if filename.endswith('.mp3') and filename.startswith('Taylor'):
+#         searchTitle(getTitleName(filename))
+# exit(1)
+
+
 updateCount = 0
 _, _, filenames = next(walk(SOURCE_PATH))
 for filename in filenames:
-    if filename.endswith('.mp3'):
+    if filename.endswith('.mp3') and filename.startswith('Taylor'):
         # print(filename)
         audiofile = eyed3.load(SOURCE_PATH + filename)
         if not audiofile or not audiofile.tag:
@@ -108,6 +124,11 @@ for filename in filenames:
         if GENRE and GENRE != audiofile.tag.genre:
             print('genre ({}) does not match metadata ({})'.format(GENRE, audiofile.tag.genre))
             audiofile.tag.genre = GENRE
+            updated = True
+
+        if ORDER and fTitle in ORDER and ORDER[fTitle] != audiofile.tag.track_num:
+            print('track number ({}) does not match metadata ({})'.format(ORDER[fTitle], audiofile.tag.track_num))
+            audiofile.tag.track_num = ORDER[fTitle]
             updated = True
 
         # if updated:  # actually do the update

@@ -232,6 +232,11 @@ def cleanup_session():
         driver.quit()
 
 # run like:  python3 craigslist-renew.py config.yml
+# run like:  python craigslist-renew.py config.yml
+# download compatible chromedriver here: https://googlechromelabs.github.io/chrome-for-testing/
+# open linux shell (shift right click) and use wget on a url like:
+#   	https://storage.googleapis.com/chrome-for-testing-public/122.0.6261.128/win64/chromedriver-win64.zip
+# pull out the exe from the zip, place in this repo and run
 if __name__ == '__main__':
     global config, driver
     try:

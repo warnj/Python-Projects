@@ -10,24 +10,26 @@ prefix_to_add = 'name - '
 def renameTitleOnly(filename):
     if filename.endswith('.mp3') and not filename.startswith(prefix_to_add):
         title = filename[:-18]
-        newName = prefix_to_add + title + '.mp3'
-        # print(newName)
-        os.rename(SOURCE_PATH+filename, SOURCE_PATH+newName)
+        return prefix_to_add + title + '.mp3'
 
 # renames file of the format including "(..." by removing the chars after first paren
 def renameParen(filename):
-    if filename.endswith('.mp3') and filename.startswith(prefix_to_add):
+    if filename.endswith('.mp3') and filename.startswith(prefix_to_add):  # double check for sanity
         head = filename.partition('(')[0]
         head = head[:-1]
-        newName = head + '.mp3'
-        # print(newName)
-        os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
+        return head + '.mp3'
 
 _, _, filenames = next(walk(SOURCE_PATH))
 for filename in filenames:
-    # remove the track number prefix and add artist name
-    if filename.endswith('.mp3') and not filename.startswith(prefix_to_add):
-        title = filename[3:]
-        newName = prefix_to_add + title
-        # print(newName)
+
+    if filename.endswith('.mp3') and filename.startswith(prefix_to_add):
+        newName = renameParen(filename)
+        print(newName)
         os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
+
+    # remove the track number prefix and add artist name
+    # if filename.endswith('.mp3') and not filename.startswith(prefix_to_add):
+    #     title = filename[3:]
+    #     newName = prefix_to_add + title
+    #     # print(newName)
+    #     os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
