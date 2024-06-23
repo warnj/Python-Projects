@@ -11,7 +11,8 @@ Files follow naming conventions:
 
 # SOURCE_PATH = 'D:/Music/Int/Movie/'
 SOURCE_PATH = 'D:/Music/Int/'
-# SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
+# SOURCE_PATH = 'D:/Music/Int/Country/'
+# SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
 
 # optional
 ALBUM = ''
@@ -90,7 +91,7 @@ def getAlbumName(filename):
 updateCount = 0
 _, _, filenames = next(walk(SOURCE_PATH))
 for filename in filenames:
-    if filename.endswith('.mp3') and filename.startswith('Taylor'):
+    if filename.endswith('.mp3'):
         # print(filename)
         audiofile = eyed3.load(SOURCE_PATH + filename)
         if not audiofile or not audiofile.tag:

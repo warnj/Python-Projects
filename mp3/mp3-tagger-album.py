@@ -7,7 +7,7 @@ import eyed3
 
 SOURCE_PATH = 'D:/Music/Int/Country/'
 # SOURCE_PATH = 'D:/Music/Int/'
-# SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
+# SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
 
 UPDATE_COUNT = 0
 

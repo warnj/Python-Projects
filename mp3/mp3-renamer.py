@@ -3,7 +3,7 @@ from os import walk
 
 # helps bulk rename song files
 
-SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/youtube/'
+SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
 prefix_to_add = 'name - '
 
 # renames files of the format consisting only of song title

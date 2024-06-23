@@ -1,4 +1,5 @@
 config.yml
+config.yaml
 
 # Compiled source #
 ###################
@@ -44,4 +45,3 @@ Thumbs.db
 
 personal_data.json
 geckodriver.log
-

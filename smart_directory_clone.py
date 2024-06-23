@@ -21,8 +21,18 @@ def deletedir(dir):
 
 
 # !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SOURCE = 'D:\Pictures'
-DESTINATION = 'F:\Bkup 2019_6_23\Pictures'
+SOURCE = 'D:/Pictures/All/Underwater/ID Guide Puget Sound'
+DESTINATION = 'F:/JKW_BKUP/Pictures/All/Underwater/ID Guide Puget Sound'
+
+# SOURCE = 'D:/Pictures/All/Underwater/Mainland Dives'
+# DESTINATION = 'F:/JKW_BKUP/Pictures/All/Underwater/Mainland Dives'
+
+# SOURCE = 'D:/Pictures/All/Around Yakima'
+# DESTINATION = 'F:/JKW_BKUP/Pictures/All/Around Yakima'
+
+# SOURCE = 'D:/Pictures/All/Vacation/2024'
+# DESTINATION = 'F:/JKW_BKUP/Pictures/All/Vacation/2024'
+
 TEST = False
 PRINT = True
 
