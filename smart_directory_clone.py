@@ -21,19 +21,31 @@ def deletedir(dir):
 
 
 # !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SOURCE = 'D:/Pictures/All/Underwater/ID Guide Puget Sound'
-DESTINATION = 'F:/JKW_BKUP/Pictures/All/Underwater/ID Guide Puget Sound'
+# SOURCE = 'D:/Music'
+# DESTINATION = 'G:/JKW_BKUP/Music'
+
+# DO NOT DO THE ACTION BELOW since backup has extra years of vacation
+# SOURCE = 'D:/Pictures'
+# DESTINATION = 'F:/JKW_BKUP/Pictures'
+
+# SOURCE = 'D:/Pictures/All/Underwater/ID Guide Puget Sound'
+# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/ID Guide Puget Sound'
 
 # SOURCE = 'D:/Pictures/All/Underwater/Mainland Dives'
-# DESTINATION = 'F:/JKW_BKUP/Pictures/All/Underwater/Mainland Dives'
+# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/Mainland Dives'
 
 # SOURCE = 'D:/Pictures/All/Around Yakima'
 # DESTINATION = 'F:/JKW_BKUP/Pictures/All/Around Yakima'
 
-# SOURCE = 'D:/Pictures/All/Vacation/2024'
+# SOURCE = 'D:/Pictures/All/Vacation/2022'
+# BACKUP to Ineo500GB
+# DESTINATION = 'F:/Justin/Pictures/All/Vacation/2022'
+# BACKUP to 2TB drive
 # DESTINATION = 'F:/JKW_BKUP/Pictures/All/Vacation/2024'
 
-TEST = False
+# TEST = False
+TEST = True
+
 PRINT = True
 
 files = {}  # dest abs path -> source path
