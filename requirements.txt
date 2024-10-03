@@ -13,3 +13,4 @@ PyYAML==6.0
 #selenium==4.7.2
 pillow
 PyPDF2
+hachoir
