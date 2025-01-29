@@ -26,22 +26,28 @@ def deletedir(dir):
 
 # DO NOT DO THE ACTION BELOW since backup has extra years of vacation
 # SOURCE = 'D:/Pictures'
-# DESTINATION = 'F:/JKW_BKUP/Pictures'
+# DESTINATION = 'G:/JKW_BKUP/Pictures'
 
 # SOURCE = 'D:/Pictures/All/Underwater/ID Guide Puget Sound'
 # DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/ID Guide Puget Sound'
+
+# SOURCE = 'D:/Pictures/All/Underwater/ID Guide Freshwater'
+# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/ID Guide Freshwater'
 
 # SOURCE = 'D:/Pictures/All/Underwater/Mainland Dives'
 # DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/Mainland Dives'
 
 # SOURCE = 'D:/Pictures/All/Around Yakima'
-# DESTINATION = 'F:/JKW_BKUP/Pictures/All/Around Yakima'
+# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Around Yakima'
 
-# SOURCE = 'D:/Pictures/All/Vacation/2022'
+# SOURCE = 'D:/Pictures/All/Around Seattle'
+# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Around Seattle'
+
+SOURCE = 'D:/Pictures/All/Vacation/2024'
 # BACKUP to Ineo500GB
-# DESTINATION = 'F:/Justin/Pictures/All/Vacation/2022'
+# DESTINATION = 'F:/Justin/Pictures/All/Vacation/2024'
 # BACKUP to 2TB drive
-# DESTINATION = 'F:/JKW_BKUP/Pictures/All/Vacation/2024'
+DESTINATION = 'G:/JKW_BKUP/Pictures/All/Vacation/2024'
 
 # TEST = False
 TEST = True

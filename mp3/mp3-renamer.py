@@ -14,7 +14,7 @@ def renameTitleOnly(filename):
 
 # renames file of the format including "(..." by removing the chars after first paren
 def renameParen(filename):
-    if filename.endswith('.mp3') and filename.startswith(prefix_to_add):  # double check for sanity
+    if filename.endswith('.mp3') and filename.startswith(prefix_to_add) and '(' in filename:  # double check for sanity
         head = filename.partition('(')[0]
         head = head[:-1]
         return head + '.mp3'
@@ -25,7 +25,8 @@ for filename in filenames:
     if filename.endswith('.mp3') and filename.startswith(prefix_to_add):
         newName = renameParen(filename)
         print(newName)
-        os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
+        if newName:
+            os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
 
     # remove the track number prefix and add artist name
     # if filename.endswith('.mp3') and not filename.startswith(prefix_to_add):

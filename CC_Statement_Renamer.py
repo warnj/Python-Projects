@@ -1,4 +1,5 @@
 import os
+import re
 from os import walk
 
 # SOURCE_PATH = 'C:/Users/warnj/Downloads/'
@@ -72,21 +73,32 @@ months = {
     'Nov': '11',
     'Dec': '12',
 }
+# renames for single-slip exported format
 def renameADPPayslip(filename):
     if filename.endswith('.pdf') and filename.startswith('Statement for'):
-        print(filename)
-        year = filename[-8:-4]
-        month = filename[14:17]
-        day = filename[18:-10]
-        print('year "{}"'.format(year))
-        print('month "{}"'.format(month))
-        print('day "{}"'.format(day))
-        if len(day) == 1: day = '0'+day
-        month = months[month]
-        newName = 'Cruise_Payslip_' + year+'_'+month+'_'+day+'.pdf'
-        print('new name', newName)
-        os.rename(SOURCE_PATH+filename, SOURCE_PATH+newName)
+        # pattern = r"\b(\w{3}) (\d{1,2}), (\d{4})"
+        pattern = r"\b(\w{3}) (\d{1,2}), (\d{4})(.*)\.pdf$"
+        match = re.search(pattern, filename)
+        if match:
+            month, day, year, suffix = match.groups()
+            # print(f"{filename}: Year: {year}, Month: {month}, Day: {day}, Suffix: {suffix}")
+            if len(day) == 1: day = '0'+day
+            month = months[month]
+            newName = 'Cruise_Payslip_' + year+'_'+month+'_'+day+suffix+'.pdf'
+            print('new name', newName)
+            os.rename(SOURCE_PATH+filename, SOURCE_PATH+newName)
+# renames the zip multiple exported format
+def renameADPExportedPayslip(filename):
+    if filename.endswith('.pdf') and filename.startswith('Pay Date'):
+        # pattern for "Pay Date YYYY-MM-DD[ - optional suffix].pdf"
+        pattern = r"Pay Date (\d{4})-(\d{2})-(\d{2})(.*)\.pdf$"
+        match = re.search(pattern, filename)
+        if match:
+            year, month, day, suffix = match.groups()
+            newName = f'Cruise_Payslip_{year}_{month}_{day}{suffix}.pdf'
+            print(f'old name: {filename}\t\tnew name: {newName}')
+            os.rename(SOURCE_PATH + filename, SOURCE_PATH + newName)
 
 _, _, filenames = next(walk(SOURCE_PATH))
 for filename in filenames:
-    renameADPPayslip(filename)
+    renameADPExportedPayslip(filename)
