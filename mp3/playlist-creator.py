@@ -3,22 +3,25 @@ import sys
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-def get_recent_mp3s(directory, limit=50):
+def get_recent_mp3s(directory, limit=50, recursive=True):
     mp3_files = []
-    for root, _, files in os.walk(directory):
+    if recursive:
+        print('using recursive directory exploration')
+        walker = os.walk(directory)
+    else:
+        print('using non-recursive directory exploration')
+        walker = [(directory, [], os.listdir(directory))]
+
+    for root, _, files in walker:
         for file in files:
             if file.lower().endswith(('.mp3', '.wma', '.m4a')):
                 full_path = Path(root) / file
                 try:
-                    # mtime = os.path.getmtime(full_path)  # Use ctime on Windows if desired
                     mtime = full_path.stat().st_mtime
                     mp3_files.append((mtime, full_path))
                 except Exception as e:
                     print(f"Error accessing {full_path}: {e}")
-    print(mp3_files[:limit])
-    # Sort files by modified time (newest first)
     mp3_files.sort(key=lambda x: x[0], reverse=True)
-    # Convert paths to uniform forward-slash format
     return [str(path.as_posix()) for _, path in mp3_files[:limit]]
 
 def save_to_wpl(file_paths, output_path):
@@ -33,7 +36,6 @@ def save_to_wpl(file_paths, output_path):
         '    <seq>'
     ]
     for path in file_paths:
-        # Escape XML special characters
         windows_path = str(Path(path))
         lines.append(f'      <media src="{escape(windows_path)}" />')
     lines.extend([
@@ -47,24 +49,18 @@ def save_to_wpl(file_paths, output_path):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Create a playlist of the 50 most recently modified mp3 files.")
-    parser.add_argument(
-        "--directory",
-        help="Directory to search for MP3 files",
-        default="D:/Music/Int/Country"
-    )
-    parser.add_argument(
-        "--output",
-        help="Output playlist file (e.g., recent_playlist.wpl)",
-        default="D:/Music/Playlists/country-recent50-2025-05.wpl"
-    )
+    parser = argparse.ArgumentParser(description="Create a playlist of the most recently modified MP3 files.")
+    parser.add_argument("--directory", help="Directory to search for MP3 files", default="D:/Music/Int")
+    parser.add_argument("--output", help="Output playlist file (e.g., recent_playlist.wpl)", default="D:/Music/Playlists/int-recent50-2025-05.wpl")
+    parser.add_argument("--limit", type=int, help="Maximum number of recent files to include", default=50)
+    parser.add_argument("--recursive", action="store_true", help="Search subdirectories recursively", default=False)
     args = parser.parse_args()
 
     if os.path.exists(args.output):
         print(f"Playlist file '{args.output}' already exists. Exiting without changes.")
         sys.exit(0)
 
-    recent_mp3s = get_recent_mp3s(args.directory, limit=50)
+    recent_mp3s = get_recent_mp3s(args.directory, limit=args.limit, recursive=args.recursive)
     print('\n'.join(recent_mp3s))
     save_to_wpl(recent_mp3s, args.output)
     print(f"Saved playlist with {len(recent_mp3s)} files to {args.output}")
