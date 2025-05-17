@@ -2,7 +2,7 @@ import os, pathlib
 
 # removes all mac files that start with '._'
 
-SOURCE_PATH = 'D:/Pictures/All/Vacation/'
+SOURCE_PATH = 'D:/Pictures/Vacation/'
 
 def deletefile(file):
     try:

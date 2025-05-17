@@ -11,13 +11,13 @@ Files follow naming conventions:
 
 # SOURCE_PATH = 'D:/Music/Int/Movie/'
 # SOURCE_PATH = 'D:/Music/Int/'
-# SOURCE_PATH = 'D:/Music/Int/Country/'
-SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
+SOURCE_PATH = 'D:/Music/Int/Country/'
+# SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
 
 # optional
 ALBUM = ''
 # GENRE = 'Indie / Alternative'  # examples: Country / Soundtrack / Pop - https://eyed3.readthedocs.io/en/latest/plugins/genres_plugin.html
-GENRE = 'Pop'
+GENRE = 'Country'
 ORDER = {
     "": 1,
 }
@@ -91,7 +91,7 @@ def getAlbumName(filename):
 updateCount = 0
 _, _, filenames = next(walk(SOURCE_PATH))
 for filename in filenames:
-    if filename.endswith('.mp3') and filename.startswith('NAME'):
+    if filename.endswith('.mp3'):
         # print(filename)
         audiofile = eyed3.load(SOURCE_PATH + filename)
         if not audiofile or not audiofile.tag:

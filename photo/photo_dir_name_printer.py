@@ -4,7 +4,7 @@ import os, pathlib
 
 SOURCE_PATH = 'D:/Pictures/'
 SOURCE_PATH = '/Users/justin.warner/Pictures/2023_09_15 Vancouver Island Port Hardy Diving/'
-SOURCE_PATH = 'D:/Pictures/All/Vacation/2024/2024_03_01 Campbell River/'
+SOURCE_PATH = 'D:/Pictures/Vacation/2024/2024_03_01 Campbell River/'
 
 def printContents(directory):
     dirCount = 0

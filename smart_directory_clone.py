@@ -21,36 +21,36 @@ def deletedir(dir):
 
 
 # !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# SOURCE = 'D:/Music'
-# DESTINATION = 'G:/JKW_BKUP/Music'
+SOURCE = 'D:/Music'
+DESTINATION = 'H:/JKW_BKUP/Music'
 
 # DO NOT DO THE ACTION BELOW since backup has extra years of vacation
 # SOURCE = 'D:/Pictures'
 # DESTINATION = 'G:/JKW_BKUP/Pictures'
 
-# SOURCE = 'D:/Pictures/All/Underwater/ID Guide Puget Sound'
-# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/ID Guide Puget Sound'
+# SOURCE = 'D:/Pictures/Underwater/ID Guide Puget Sound'
+# DESTINATION = 'H:/JKW_BKUP/Pictures/Underwater/ID Guide Puget Sound'
 
-# SOURCE = 'D:/Pictures/All/Underwater/ID Guide Freshwater'
-# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/ID Guide Freshwater'
+# SOURCE = 'D:/Pictures/Underwater/ID Guide Freshwater'
+# DESTINATION = 'G:/JKW_BKUP/Pictures/Underwater/ID Guide Freshwater'
 
-# SOURCE = 'D:/Pictures/All/Underwater/Mainland Dives'
-# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Underwater/Mainland Dives'
+# SOURCE = 'D:/Pictures/Underwater/Mainland Dives'
+# DESTINATION = 'H:/JKW_BKUP/Pictures/Underwater/Mainland Dives'
 
-# SOURCE = 'D:/Pictures/All/Around Yakima'
-# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Around Yakima'
+# SOURCE = 'D:/Pictures/Around Yakima'
+# DESTINATION = 'H:/JKW_BKUP/Pictures/Around Yakima'
 
-# SOURCE = 'D:/Pictures/All/Around Seattle'
-# DESTINATION = 'G:/JKW_BKUP/Pictures/All/Around Seattle'
+# SOURCE = 'D:/Pictures/Around Seattle'
+# DESTINATION = 'H:/JKW_BKUP/Pictures/Around Seattle'
 
-SOURCE = 'D:/Pictures/All/Vacation/2024'
+# SOURCE = 'D:/Pictures/Vacation/2024'
 # BACKUP to Ineo500GB
-# DESTINATION = 'F:/Justin/Pictures/All/Vacation/2024'
+# DESTINATION = 'F:/Justin/Pictures/Vacation/2024'
 # BACKUP to 2TB drive
-DESTINATION = 'G:/JKW_BKUP/Pictures/All/Vacation/2024'
+# DESTINATION = 'H:/JKW_BKUP/Pictures/Vacation/2024'
 
-# TEST = False
-TEST = True
+TEST = False
+# TEST = True
 
 PRINT = True
 

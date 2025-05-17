@@ -1,7 +1,7 @@
 from os import walk
 import os
 
-SOURCE_PATH = 'D:/Pictures/All/Underwater/Identification Guide/'
+SOURCE_PATH = 'D:/Pictures/Underwater/Identification Guide/'
 
 for dirpath, _, filenames in walk(SOURCE_PATH):
     for name in sorted(filenames):

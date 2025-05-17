@@ -5,7 +5,7 @@ from datetime import datetime as dt
 TIMEPARSEFMT = '%Y:%m:%d %H:%M:%S'  # example: 2019-01-18 22:36:01
 DATEFMT = '%Y-%m-%d'  # example 2019-01-18
 
-SOURCE_PATH = 'D:/Pictures/All/Underwater/ID Guide Puget Sound/'
+SOURCE_PATH = 'D:/Pictures/Underwater/ID Guide Puget Sound/'
 # SOURCE_PATH = 'D:/Pictures/'
 
 allDates = set()
