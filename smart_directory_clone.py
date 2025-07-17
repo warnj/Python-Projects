@@ -21,20 +21,22 @@ def deletedir(dir):
 
 
 # !!!!!!!!!!!!!!!!!!!!  WARNING: DOUBLE CHECK THIS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SOURCE = 'D:/Music'
-DESTINATION = 'H:/JKW_BKUP/Music'
+# SOURCE = 'D:/Music'
+# DESTINATION = 'F:/Justin/Music'
 
 # DO NOT DO THE ACTION BELOW since backup has extra years of vacation
 # SOURCE = 'D:/Pictures'
 # DESTINATION = 'G:/JKW_BKUP/Pictures'
 
 # SOURCE = 'D:/Pictures/Underwater/ID Guide Puget Sound'
+# DESTINATION = 'F:/Justin/Pictures/Underwater/ID Guide Puget Sound'
 # DESTINATION = 'H:/JKW_BKUP/Pictures/Underwater/ID Guide Puget Sound'
 
 # SOURCE = 'D:/Pictures/Underwater/ID Guide Freshwater'
 # DESTINATION = 'G:/JKW_BKUP/Pictures/Underwater/ID Guide Freshwater'
 
-# SOURCE = 'D:/Pictures/Underwater/Mainland Dives'
+SOURCE = 'D:/Pictures/Underwater/Mainland Dives'
+DESTINATION = 'F:/Justin/Pictures/Underwater/Mainland Dives'
 # DESTINATION = 'H:/JKW_BKUP/Pictures/Underwater/Mainland Dives'
 
 # SOURCE = 'D:/Pictures/Around Yakima'
