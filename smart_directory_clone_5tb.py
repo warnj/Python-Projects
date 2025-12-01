@@ -3,8 +3,8 @@ import os, shutil
 # Settings
 SOURCE = 'D:/Pictures'
 DESTINATION = 'F:/Justin/Pictures'
-DESTINATION = 'H:/JKW_BKUP/Pictures'
-VACATION_YEARS_TO_PRESERVE = {str(year) for year in range(2006, 2024)}  # IMPORTANT TO ADD TO THIS AS NEEDED
+# DESTINATION = 'H:/JKW_BKUP/Pictures'
+VACATION_YEARS_TO_PRESERVE = {str(year) for year in range(2006, 2025)}  # IMPORTANT TO ADD TO THIS AS NEEDED
 TEST = True  # ALWAYS RUN FIRST IN TEST MODE
 PRINT = True
 PRESERVED_PATH_PREFIX = os.path.normpath(os.path.join(DESTINATION, 'Vacation'))

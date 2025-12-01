@@ -5,9 +5,9 @@ import eyed3
 # Searched music directory and compares song titles against a list of all songs in an album. Prints the missing album
 # songs and re-names files to exactly match the album title it is most similar to.
 
-SOURCE_PATH = 'D:/Music/Int/Country/'
+# SOURCE_PATH = 'D:/Music/Int/Country/'
 # SOURCE_PATH = 'D:/Music/Int/'
-# SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
+SOURCE_PATH = 'D:/OneDrive/Documents/Favorites Places Contacts Program Backup/yt/'
 
 UPDATE_COUNT = 0
 
